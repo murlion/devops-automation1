@@ -1,0 +1,31 @@
+pipeline{
+    agent any
+    tools {
+       maven 'Apache Maven 3.9.10'
+    }
+    stages{
+        stage('build maven project'){
+            steps{
+                checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/murlion/devops-automation1']])
+                bat 'mvn clean install'
+            }
+        }
+        stage('build docker image'){
+            steps{
+                script{
+                    bat 'docker build -t muraliking/devops-automation1 .'
+                }
+            }
+        }
+        stage('push image to hub'){
+            steps{
+                script{
+                    bat docker login -u muraliking -p Maruthi@121
+                    }
+
+}
+                    bat 'docker push muraliking/devops-automation1'
+                }
+            }
+        }
+    }
