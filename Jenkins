@@ -20,7 +20,7 @@ pipeline{
         stage('push image to hub'){
             steps{
                 script{
-                    bat docker login -u muraliking -p Maruthi@121
+                    bat 'docker login -u muraliking -p Maruthi@121'
                     }
 
 }
