@@ -1,4 +1,4 @@
-pipeline{
+ pipeline{
     agent any
     tools {
        maven 'Apache Maven 3.9.10'
@@ -28,3 +28,53 @@ pipeline{
             }
         }
     }
+
+
+------------------------------------------------------------------------------------------------------------------------------------
+k8s job:
+
+
+
+pipeline {
+    agent any
+    tools {
+        maven 'Apache Maven 3.9.10'
+    }
+    stages {
+        stage('build maven project') {
+            steps {
+                checkout([$class: 'GitSCM', branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/murlion/devops-automation1']]])
+                bat 'mvn clean install'
+            }
+        }
+        stage('build docker image') {
+            steps {
+                script {
+                    bat 'docker build -t muraliking/devops-automation1 .'
+                }
+            }
+        }
+        stage('push image to hub') {
+            steps {
+                script {
+                    bat 'docker login -u muraliking -p Maruthi@121'
+                    bat 'docker push muraliking/devops-automation1'
+                }
+            }
+        }
+        stage('deploy to k8s') {
+            steps {
+                script {
+                   kubeconfig(
+                       credentialsId: 'kubernetes',
+                       ClusterName: 'minikube',
+                       contextName: 'minikube',
+                       serverUrl: 'https://127.0.0.1:65290',
+                       namespace: 'default'
+                       ) {
+                           bat 'kubectl apply -f deployment.yaml'
+                       }
+                   }
+               }
+           }
+       }
