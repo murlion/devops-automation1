@@ -1,0 +1,38 @@
+apiVersion: app/v1
+kind: deployment
+metadata:
+  name: spring-boot-k8s-deployment
+specs:
+  selector:
+    matchLabels:
+      app: spring-boot-k8s
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        app: spring-boot-k8s
+    spec:
+      containers:
+        - name: spring-boot-k8s
+          image: muraliking/devops-automation1
+          imagePullPolice: IFNotPresent
+          ports:
+            - containerPort: 8080
+
+
+---
+
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: springboot-k8ssrv
+spec:
+  selector:
+    app: spring-boot-k8s
+  ports:
+    - protocol: "TCP"
+      port: 8080
+      targetPort: 8080
+  type: NodePort
+
