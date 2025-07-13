@@ -15,7 +15,7 @@ spec:
       containers:
         - name: spring-boot-k8s
           image: muraliking/devops-automation1
-          imagePullPolicy: IFNotPresent
+          imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8080
 
